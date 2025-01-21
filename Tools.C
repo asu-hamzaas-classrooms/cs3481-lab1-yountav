@@ -108,10 +108,16 @@ uint64_t Tools::getByte(uint64_t source, int32_t byteNum)
  */
 uint64_t Tools::getBits(uint64_t source, int32_t low, int32_t high)
 {
-  if (byteNum > 7 || byteNum < 0)
+  if (low < 0 || high >= 64)
   {
     return 0;
   }
+  int32_t difference = high - low;
+  uint64_t mylong = source >> (difference / 8);
+  mylong = mylong << ((63 - high) / 8);
+  mylong = mylong >> ((63 - low) / 8);
+  mylong = mylong & 0x0000000000000ff;
+  return mylong;
 }
 
 
