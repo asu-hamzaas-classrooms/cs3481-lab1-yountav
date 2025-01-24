@@ -149,7 +149,10 @@ uint64_t Tools::setBits(uint64_t source, int32_t low, int32_t high)
   {
     return source;
   }
-  return 0;
+  uint64_t setHigh = (source >> ((high) * 8)) & 0x000000000000011;
+  uint64_t setLow = (source >> ((low) * 8) & 0x000000000000011);
+  uint64_t mylong = setHigh + setLow;
+  return mylong;
 }
 
 /**
@@ -178,6 +181,7 @@ uint64_t Tools::clearBits(uint64_t source, int32_t low, int32_t high)
   {
     return source;
   }
+  uint64_t clear = 0;
   return 0;
 }
 
