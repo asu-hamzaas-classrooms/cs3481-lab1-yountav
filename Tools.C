@@ -234,7 +234,7 @@ uint64_t Tools::copyBits(uint64_t source, uint64_t dest,
  */
 uint64_t Tools::setByte(uint64_t source, int32_t byteNum)
 {
-  return source | (0xFFULL << (byteNum * 8));
+  return source | (0xFF << (byteNum * 8));
 }
 
 
@@ -322,7 +322,7 @@ bool Tools::subOverflow(uint64_t op1, uint64_t op2)
   //NOTE: the subtraction is op2 - op1 (not op1 - op2).
 
   bool sign = (op1 >> 63) != (op2 >> 63);
-  bool overflow = (op1 >> 63) != ((op2 - op1) >> 63);
+  bool overflow = (op1 >> 63) == ((op2 - op1) >> 63);
 
   return sign && overflow;
 }
