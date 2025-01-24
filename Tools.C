@@ -47,7 +47,7 @@ uint64_t Tools::buildLong(uint8_t bytes[LONGSIZE])
 
   for(int i = 0; i < LONGSIZE; ++i)
   {
-    buildlong = (buildlong << 8) | bytes[i];
+    buildlong |= (uint64_t) bytes[i] << (i * 8);
   }
   return buildlong;
 }
@@ -113,9 +113,11 @@ uint64_t Tools::getBits(uint64_t source, int32_t low, int32_t high)
   {
     return 0;
   }
-  int64_t difference = ((uint64_t) 1 << (high + 1)) - ((uint64_t) 1 << low);
-  uint64_t mylong = (source & difference) >> low;
-  return mylong;
+  //uint64_t difference = ((uint64_t) 1 << (high + 1)) - ((uint64_t) 1 << low);
+  uint64_t mask = ((1ULL << (high - low + 1)) - 1);
+  //uint64_t mylong = (source & difference) >> low;
+  uint64_t numOfBits = (source >> low) & mask;
+  return numOfBits;
 }
 
 
@@ -224,7 +226,7 @@ uint64_t Tools::copyBits(uint64_t source, uint64_t dest,
  */
 uint64_t Tools::setByte(uint64_t source, int32_t byteNum)
 {
-  return 0;
+  return source | (0xFFULL << (byteNum * 8));
 }
 
 
@@ -310,5 +312,9 @@ bool Tools::subOverflow(uint64_t op1, uint64_t op2)
   //Note: you can not simply use addOverflow in this function.  If you negate
   //op1 in order to an add, you may get an overflow. 
   //NOTE: the subtraction is op2 - op1 (not op1 - op2).
-  return false;
+
+  bool sign = (op1 >> 63) != (op2 >> 63);
+  bool overflow = (op1 >> 63) != ((op2 - op1) >> 63);
+
+  return sign && overflow;
 }
