@@ -45,7 +45,7 @@ uint64_t Tools::buildLong(uint8_t bytes[LONGSIZE])
 {
   uint64_t buildlong = 0;
 
-  for(int i = 0; i < LONGSIZE; i++)
+  for (int i = 0; i < LONGSIZE; i++)
   {
     buildlong |= (uint64_t) bytes[i] << (i * 8);
   }
@@ -113,7 +113,6 @@ uint64_t Tools::getBits(uint64_t source, int32_t low, int32_t high)
   {
     return 0;
   }
-
   uint64_t numOfBits = source >> low;
   numOfBits = numOfBits << (63 - (high - low));
   numOfBits = numOfBits >> (63 - (high - low));
@@ -185,7 +184,7 @@ uint64_t Tools::clearBits(uint64_t source, int32_t low, int32_t high)
   {
     return source;
   }
-  uint64_t mask = ~((1LL << (high - low + 1)) - 1 << low);
+  uint64_t mask = ~(((1LL << (high - low + 1)) - 1) << low);
   return source & mask;
 }
 
@@ -221,7 +220,9 @@ uint64_t Tools::copyBits(uint64_t source, uint64_t dest,
   {
     return dest;
   }
-  return 0; 
+  uint64_t bits = ~(((1LL << length) - 1) << dstlow);
+  uint64_t shift = (source >> srclow) & ((1LL << length) - 1);
+  return (dest & bits) | (shift << dstlow);
 }
 
 
@@ -269,7 +270,7 @@ uint64_t Tools::setByte(uint64_t source, int32_t byteNum)
  */
 uint64_t Tools::sign(uint64_t source)
 {
-  uint64_t sign = (source >> 63) & 1;
+  uint64_t sign = (source >> 63);
   return sign;
 }
 
@@ -300,10 +301,8 @@ bool Tools::addOverflow(uint64_t op1, uint64_t op2)
   //      Thus, the way to check for an overflow is to compare the signs of the
   //      operand and the result.  For example, if you add two positive numbers, 
   //      the result should be positive, otherwise an overflow occurred.
-
   bool sign = (op1 >> 63) == (op2 >> 63);
   bool overflow = (op1 >> 63) != ((op1 + op2) >> 63);
-
   return sign && overflow;
 }
 
