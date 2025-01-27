@@ -45,7 +45,7 @@ uint64_t Tools::buildLong(uint8_t bytes[LONGSIZE])
 {
   uint64_t buildlong = 0;
 
-  for(int i = 0; i < LONGSIZE; ++i)
+  for(int i = 0; i < LONGSIZE; i++)
   {
     buildlong |= (uint64_t) bytes[i] << (i * 8);
   }
@@ -118,9 +118,12 @@ uint64_t Tools::getBits(uint64_t source, int32_t low, int32_t high)
   //uint64_t mylong = (source & difference) >> low;
   //uint64_t numOfBits = (source >> low) & mask;
   //return mylong;
-  uint64_t mask = ((1ULL << (high - low + 1)) - 1);
+  uint64_t mask = ((1LL << (high - low + 1)) - 1);
   //uint64_t numOfBits = mask << low;
-  return (source >> low) & mask;
+  //return numOfBits;
+  //return (source >> low) & mask;
+  uint64_t numOfBits = (source >> low) & mask;
+  return numOfBits;
 }
 
 
@@ -152,13 +155,14 @@ uint64_t Tools::setBits(uint64_t source, int32_t low, int32_t high)
   {
     return source;
   }
-  //uint64_t setHigh = (source >> ((high) * 8)) & 0x000000000000011;
-  //uint64_t setLow = (source >> ((low) * 8) & 0x000000000000011);
-  //uint64_t mylong = setHigh + setLow;
-  //return mylong;
-  uint64_t mask = ((1ULL << (high - low + 1)) - 1);
-  uint64_t numOfBits = mask << low;
-  return source | numOfBits;
+  //uint64_t mask = ((1ULL << (high - low + 1)) - 1) << low;
+  //uint64_t numOfBits = mask << low;
+  //uint64_t mask = ~0;
+  //uint64_t shift = ((mask << (high - low + 1)) - 1) << low;
+  //return source | shift;
+  uint64_t mask = ((1ULL << (high - low + 1)) - 1) << low;
+  //uint64_t numOfBits = mask << low;
+  return source | mask;
 }
 
 /**
@@ -183,12 +187,12 @@ uint64_t Tools::setBits(uint64_t source, int32_t low, int32_t high)
  */
 uint64_t Tools::clearBits(uint64_t source, int32_t low, int32_t high)
 {
-  if (low < 0 || low > 63 || high < 0 || high > 63 || low > high)
+  if (low < 0 || high > 63 || low > high)
   {
     return source;
   }
-  uint64_t clear = 0;
-  return 0;
+  uint64_t mask = ~((1LL << (high - low + 1)) - 1 << low);
+  return source & mask;
 }
 
 
