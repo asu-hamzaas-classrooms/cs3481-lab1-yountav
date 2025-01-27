@@ -114,10 +114,13 @@ uint64_t Tools::getBits(uint64_t source, int32_t low, int32_t high)
     return 0;
   }
   //uint64_t difference = ((uint64_t) 1 << (high + 1)) - ((uint64_t) 1 << low);
-  uint64_t mask = ((1ULL << (high - low + 1)) - 1);
+  //uint64_t mask = ((1ULL << (high - low + 1)) - 1);
   //uint64_t mylong = (source & difference) >> low;
-  uint64_t numOfBits = (source >> low) & mask;
-  return numOfBits;
+  //uint64_t numOfBits = (source >> low) & mask;
+  //return mylong;
+  uint64_t mask = ((1ULL << (high - low + 1)) - 1);
+  //uint64_t numOfBits = mask << low;
+  return (source >> low) & mask;
 }
 
 
@@ -149,10 +152,13 @@ uint64_t Tools::setBits(uint64_t source, int32_t low, int32_t high)
   {
     return source;
   }
-  uint64_t setHigh = (source >> ((high) * 8)) & 0x000000000000011;
-  uint64_t setLow = (source >> ((low) * 8) & 0x000000000000011);
-  uint64_t mylong = setHigh + setLow;
-  return mylong;
+  //uint64_t setHigh = (source >> ((high) * 8)) & 0x000000000000011;
+  //uint64_t setLow = (source >> ((low) * 8) & 0x000000000000011);
+  //uint64_t mylong = setHigh + setLow;
+  //return mylong;
+  uint64_t mask = ((1ULL << (high - low + 1)) - 1);
+  uint64_t numOfBits = mask << low;
+  return source | numOfBits;
 }
 
 /**
@@ -242,7 +248,8 @@ uint64_t Tools::copyBits(uint64_t source, uint64_t dest,
  */
 uint64_t Tools::setByte(uint64_t source, int32_t byteNum)
 {
-  return source | (0xFFULL << (byteNum * 8));
+  
+  return source | (0xFFLL << (byteNum * 8)) * (byteNum >= 0 && byteNum < 8);
 }
 
 
